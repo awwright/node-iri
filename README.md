@@ -39,13 +39,13 @@ Returns UTF-16 IRI
 
 Returns the IRI without the fragment component. Useful for dereferencing URLs on a network.
 
-	new IRI().defrag() ### 'http://example.com/resource'
+	new IRI().defrag() === 'http://example.com/resource'
 
 ### isAbsolute()
 
 IRIs with a fragment are not absolute.
 
-### toAbsolute
+### toAbsolute()
 
 Resolves the IRI against itself, having the effect of stripping the fragment and checking that the supplied IRI is valid (absolute).
 
