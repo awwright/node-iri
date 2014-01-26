@@ -93,6 +93,26 @@ Returns the username/password component of the IRI.
 
 Returns a URI formatted string with only 7-bit characters.
 
+### toIRIString()
+
+Decodes URI-encoded UTF-8 characters and returns a unicode string (Strings in ECMAScript/JavaScript are UTF-16).
+
+### toIRI()
+
+Returns a new IRI object with URI-encoded UTF-8 characters decoded.
+
+
+## Function Usage
+
+### iri.fromURI(uri)
+
+Returns an iri.IRI object decoded from the given URI.
+
+### iri.toIRIString(uri)
+
+Returns an IRI string decoded from the given URI.
+
+
 ## Tests
 
 Tests are available as a Vows test suite. Run `vows` in the package directory to execute.

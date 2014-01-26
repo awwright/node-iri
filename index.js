@@ -227,3 +227,33 @@ api.IRI.prototype.userinfo = function userinfo() {
 api.IRI.prototype.toURIString = function toURIString(){
 	return this.value.replace(/([\uA0-\uD7FF\uE000-\uFDCF\uFDF0-\uFFEF]|[\uD800-\uDBFF][\uDC00-\uDFFF])/g, function(a){return encodeURI(a);});
 }
+api.IRI.prototype.toIRIString = function toIRIString(){
+	// HEXDIG requires capital characters
+	// 80-BF is following bytes, (%[89AB][0-9A-F])
+	// 00-7F no bytes follow (%[0-7][0-9A-F])(%[89AB][0-9A-F]){0}
+	// C0-DF one byte follows (%[CD][0-9A-F])(%[89AB][0-9A-F]){1}
+	// E0-EF two bytes follow (%[E][0-9A-F])(%[89AB][0-9A-F]){2}
+	// F0-F7 three bytes follow (%[F][0-7])(%[89AB][0-9A-F]){3}
+	// F8-FB four bytes follow (%[F][89AB])(%[89AB][0-9A-F]){4}
+	// FC-FD five bytes follow (%[F][CD])(%[89AB][0-9A-F]){5}
+	var utf8regexp = /%([0-7][0-9A-F])|%[CD][0-9A-F](%[89AB][0-9A-F])|%[E][0-9A-F](%[89AB][0-9A-F]){2}|%[F][0-7](%[89AB][0-9A-F]){3}|%[F][89AB](%[89AB][0-9A-F]){4}|%[F][CD](%[89AB][0-9A-F]){5}/g;
+	// : / ? # [ ] @   ! $ & ' ( ) * + , ; =
+	var reserved = [ '3A', '2F', '3F', '23', '5B', '5D', '40',   '21', '24', '26', '27', '28', '29', '2A', '2B', '2C', '3B', '3D'];
+	var iri = this.toString().replace(utf8regexp, function(a, b){
+		if(reserved.indexOf(b)>=0) return a;
+		return decodeURIComponent(a);
+	});
+	return iri;
+}
+
+api.IRI.prototype.toIRI = function toIRI(){
+	return new api.IRI(this.toIRIString);
+}
+
+api.fromURI = function fromURI(uri){
+	return new api.IRI(uri).toIRI();
+}
+
+api.toIRIString = function toIRIString(uri){
+	return api.IRI(uri).toIRIString();
+}
