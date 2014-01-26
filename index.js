@@ -236,9 +236,10 @@ api.IRI.prototype.toIRIString = function toIRIString(){
 	// F0-F7 three bytes follow (%[F][0-7])(%[89AB][0-9A-F]){3}
 	// F8-FB four bytes follow (%[F][89AB])(%[89AB][0-9A-F]){4}
 	// FC-FD five bytes follow (%[F][CD])(%[89AB][0-9A-F]){5}
-	var utf8regexp = /%([0-7][0-9A-F])|%[CD][0-9A-F](%[89AB][0-9A-F])|%[E][0-9A-F](%[89AB][0-9A-F]){2}|%[F][0-7](%[89AB][0-9A-F]){3}|%[F][89AB](%[89AB][0-9A-F]){4}|%[F][CD](%[89AB][0-9A-F]){5}/g;
+	var utf8regexp = /%([2-7][0-9A-F])|%[CD][0-9A-F](%[89AB][0-9A-F])|%[E][0-9A-F](%[89AB][0-9A-F]){2}|%[F][0-7](%[89AB][0-9A-F]){3}|%[F][89AB](%[89AB][0-9A-F]){4}|%[F][CD](%[89AB][0-9A-F]){5}/g;
+	// reserved characters := gen-delims, space, and sub-delims
 	// : / ? # [ ] @   ! $ & ' ( ) * + , ; =
-	var reserved = [ '3A', '2F', '3F', '23', '5B', '5D', '40',   '21', '24', '26', '27', '28', '29', '2A', '2B', '2C', '3B', '3D'];
+	var reserved = [ '3A', '2F', '3F', '23', '5B', '5D', '40', '20', '21', '24', '26', '27', '28', '29', '2A', '2B', '2C', '3B', '3D'];
 	var iri = this.toString().replace(utf8regexp, function(a, b){
 		if(reserved.indexOf(b)>=0) return a;
 		var chr = decodeURIComponent(a);
