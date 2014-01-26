@@ -3,6 +3,13 @@ var assert=require('assert');
 var iri=require('../');
 var IRI=iri.IRI;
 
+function testConversion(irival, urival){
+	return {
+		'IRI->URI': function(){ assert.strictEqual(new IRI(irival).toURIString(), urival); },
+		'URI->IRI': function(){ assert.strictEqual(new IRI(urival).toIRIString(), irival); }
+	};
+}
+
 vows.describe('rdf.IRI').addBatch( // The builtin RDFEnvironment
 { "(new IRI(<http://example.com/>))":
 	{ topic: new IRI('http://example.com/')
@@ -105,5 +112,11 @@ vows.describe('rdf.IRI').addBatch( // The builtin RDFEnvironment
 , "IRI to URI conversion with surrogate pairs":
 	{ topic: new IRI('http://example.com/\uD800\uDF00\uD800\uDF01\uD800\uDF02')
 	, ".toURIString()": function(t){ assert.strictEqual(t.toURIString(), "http://example.com/%F0%90%8C%80%F0%90%8C%81%F0%90%8C%82"); }
+	}
+, "IRI<->URI conversion":
+	{ "0": testConversion('http://www.example.org/red%09ros\xE9#red', 'http://www.example.org/red%09ros%C3%A9#red')
+	, "1": testConversion('http://example.com/\uD800\uDF00\uD800\uDF01\uD800\uDF02', 'http://example.com/%F0%90%8C%80%F0%90%8C%81%F0%90%8C%82')
+	, "2": testConversion('http://www.example.org/r\xE9sum\xE9.html', 'http://www.example.org/r%C3%A9sum%C3%A9.html')
+	, "3": testConversion('http://www.example.org/%2F', 'http://www.example.org/%2F')
 	}
 }).export(module);
