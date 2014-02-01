@@ -43,36 +43,37 @@ api.encodeString = function encodeString(s) {
 /**
  * IRI
  */
-api.IRI = function IRI(iri) { this.value = iri; };
-api.IRI.SCHEME_MATCH = new RegExp("^[a-z0-9-.+]+:", "i");
-//api.IRI.prototype = new api.RDFNode;
-api.IRI.prototype.toString = function toString() { return this.value; }
-api.IRI.prototype.nodeType = function nodeType() { return "IRI"; };
-api.IRI.prototype.toNT = function toNT() { return "<" + api.encodeString(this.value) + ">"; };
-api.IRI.prototype.n3 = function n3() { return this.toNT(); }
-api.IRI.prototype.defrag = function defrag() {
+api.IRI = IRI;
+function IRI(iri) { this.value = iri; };
+IRI.SCHEME_MATCH = new RegExp("^[a-z0-9-.+]+:", "i");
+//IRI.prototype = new api.RDFNode;
+IRI.prototype.toString = function toString() { return this.value; }
+IRI.prototype.nodeType = function nodeType() { return "IRI"; };
+IRI.prototype.toNT = function toNT() { return "<" + api.encodeString(this.value) + ">"; };
+IRI.prototype.n3 = function n3() { return this.toNT(); }
+IRI.prototype.defrag = function defrag() {
 	var i = this.value.indexOf("#");
-	return (i < 0) ? this : new api.IRI(this.value.slice(0, i));
+	return (i < 0) ? this : new IRI(this.value.slice(0, i));
 }
-api.IRI.prototype.isAbsolute = function isAbsolute() {
+IRI.prototype.isAbsolute = function isAbsolute() {
 	return this.scheme()!=null && this.heirpart()!=null && this.fragment()==null;
 }
-api.IRI.prototype.toAbsolute = function toAbsolute() {
+IRI.prototype.toAbsolute = function toAbsolute() {
 	if(this.scheme() == null && this.heirpart() == null) { throw new Error("IRI must have a scheme and a heirpart!"); }
 	return this.resolveReference(this.value).defrag();
 }
-api.IRI.prototype.authority = function authority() {
+IRI.prototype.authority = function authority() {
 	var heirpart = this.heirpart();
 	if(heirpart.substring(0, 2) != "//") return null;
 	var authority = heirpart.slice(2);
 	var q = authority.indexOf("/");
 	return q>=0 ? authority.substring(0, q) : authority;
 }
-api.IRI.prototype.fragment = function fragment() {
+IRI.prototype.fragment = function fragment() {
 	var i = this.value.indexOf("#");
 	return (i<0) ? null : this.value.slice(i);
 }
-api.IRI.prototype.heirpart = function heirpart() {
+IRI.prototype.heirpart = function heirpart() {
 	var heirpart = this.value;
 	var q = heirpart.indexOf("?");
 	if(q >= 0) {
@@ -85,7 +86,7 @@ api.IRI.prototype.heirpart = function heirpart() {
 	if(q2 != null) heirpart = heirpart.slice(1 + q2.length);
 	return heirpart;
 }
-api.IRI.prototype.host = function host() {
+IRI.prototype.host = function host() {
 	var host = this.authority();
 	var q = host.indexOf("@");
 	if(q >= 0) host = host.slice(++q);
@@ -96,12 +97,12 @@ api.IRI.prototype.host = function host() {
 	q = host.lastIndexOf(":");
 	return q >= 0 ? host.substring(0, q) : host;
 }
-api.IRI.prototype.path = function path() {
+IRI.prototype.path = function path() {
 	var q = this.authority();
 	if(q == null) return this.heirpart();
 	return this.heirpart().slice(q.length + 2);
 }
-api.IRI.prototype.port = function port() {
+IRI.prototype.port = function port() {
 	var host = this.authority();
 	var q = host.indexOf("@");
 	if(q >= 0) host = host.slice(++q);
@@ -114,7 +115,7 @@ api.IRI.prototype.port = function port() {
 	host = host.slice(++q);
 	return host.length == 0 ? null : host;
 }
-api.IRI.prototype.query = function query() {
+IRI.prototype.query = function query() {
 	var q = this.value.indexOf("?");
 	if(q < 0) return null;
 	var f = this.value.indexOf("#");
@@ -156,10 +157,10 @@ api.removeDotSegments = function removeDotSegments(input) {
 	}
 	return output;
 }
-api.IRI.prototype.resolveReference = function resolveReference(ref) {
+IRI.prototype.resolveReference = function resolveReference(ref) {
 	var reference;
 	if(typeof ref == "string") {
-		reference = new api.IRI(ref);
+		reference = new IRI(ref);
 	}else if(ref.nodeType && ref.nodeType() == "IRI") {
 		reference = ref;
 	}else {
@@ -213,21 +214,21 @@ api.IRI.prototype.resolveReference = function resolveReference(ref) {
 		T.scheme = this.scheme();
 	}
 	T.fragment = reference.fragment()||'';
-	return new api.IRI(T.scheme + ":" + T.authority + T.path + T.query + T.fragment);
+	return new IRI(T.scheme + ":" + T.authority + T.path + T.query + T.fragment);
 }
-api.IRI.prototype.scheme = function scheme() {
-	var scheme = this.value.match(api.IRI.SCHEME_MATCH);
+IRI.prototype.scheme = function scheme() {
+	var scheme = this.value.match(IRI.SCHEME_MATCH);
 	return (scheme == null) ? null : scheme.shift().slice(0, -1);
 }
-api.IRI.prototype.userinfo = function userinfo() {
+IRI.prototype.userinfo = function userinfo() {
 	var authority = this.authority();
 	var q = authority.indexOf("@");
 	return (q < 0) ? null : authority.substring(0, q);
 }
-api.IRI.prototype.toURIString = function toURIString(){
+IRI.prototype.toURIString = function toURIString(){
 	return this.value.replace(/([\uA0-\uD7FF\uE000-\uFDCF\uFDF0-\uFFEF]|[\uD800-\uDBFF][\uDC00-\uDFFF])/g, function(a){return encodeURI(a);});
 }
-api.IRI.prototype.toIRIString = function toIRIString(){
+IRI.prototype.toIRIString = function toIRIString(){
 	// HEXDIG requires capital characters
 	// 80-BF is following bytes, (%[89AB][0-9A-F])
 	// 00-7F no bytes follow (%[0-7][0-9A-F])(%[89AB][0-9A-F]){0}
@@ -247,14 +248,14 @@ api.IRI.prototype.toIRIString = function toIRIString(){
 	return iri;
 }
 
-api.IRI.prototype.toIRI = function toIRI(){
-	return new api.IRI(this.toIRIString);
+IRI.prototype.toIRI = function toIRI(){
+	return new IRI(this.toIRIString);
 }
 
 api.fromURI = function fromURI(uri){
-	return new api.IRI(uri).toIRI();
+	return new IRI(uri).toIRI();
 }
 
 api.toIRIString = function toIRIString(uri){
-	return api.IRI(uri).toIRIString();
+	return IRI(uri).toIRIString();
 }
