@@ -249,13 +249,14 @@ IRI.prototype.toIRIString = function toIRIString(){
 }
 
 IRI.prototype.toIRI = function toIRI(){
-	return new IRI(this.toIRIString);
+	return new IRI(this.toIRIString());
 }
 
+// Create a new IRI object and decode UTF-8 escaped characters
 api.fromURI = function fromURI(uri){
 	return new IRI(uri).toIRI();
 }
 
 api.toIRIString = function toIRIString(uri){
-	return IRI(uri).toIRIString();
+	return new IRI(uri).toIRIString();
 }

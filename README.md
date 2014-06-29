@@ -106,7 +106,7 @@ Returns a new IRI object with URI-encoded UTF-8 characters decoded.
 
 ### iri.fromURI(uri)
 
-Returns an iri.IRI object decoded from the given URI.
+Returns an iri.IRI object with UTF-8 escaped characterd decoded.
 
 ### iri.toIRIString(uri)
 
