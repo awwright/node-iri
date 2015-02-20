@@ -59,7 +59,7 @@ IRI.prototype.isAbsolute = function isAbsolute() {
 	return this.scheme()!=null && this.heirpart()!=null && this.fragment()==null;
 }
 IRI.prototype.toAbsolute = function toAbsolute() {
-	if(this.scheme() == null && this.heirpart() == null) { throw new Error("IRI must have a scheme and a heirpart!"); }
+	if(this.scheme() == null || this.heirpart() == null) { throw new Error("IRI must have a scheme and a heirpart!"); }
 	return this.resolveReference(this.value).defrag();
 }
 IRI.prototype.authority = function authority() {
