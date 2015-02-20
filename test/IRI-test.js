@@ -21,7 +21,7 @@ vows.describe('rdf.IRI').addBatch( // The builtin RDFEnvironment
 	, ".toAbsolute() is self": function(t){ assert.strictEqual(t.toAbsolute().value, 'http://example.com/'); }
 	, ".authority() === 'example.com'": function(t){ assert.strictEqual(t.authority(), 'example.com'); }
 	, ".fragment() is null": function(t){ assert.isNull(t.fragment()); }
-	, ".heirpart() === '//example.com/'": function(t){ assert.strictEqual(t.heirpart(), '//example.com/'); }
+	, ".hierpart() === '//example.com/'": function(t){ assert.strictEqual(t.hierpart(), '//example.com/'); }
 	, ".host() === 'example.com'": function(t){ assert.strictEqual(t.host(), 'example.com'); }
 	, ".path() === '/'": function(t){ assert.strictEqual(t.path(), '/'); }
 	, ".port() is null": function(t){ assert.isNull(t.port()); }
@@ -45,7 +45,7 @@ vows.describe('rdf.IRI').addBatch( // The builtin RDFEnvironment
 	, ".toAbsolute() strips fragment": function(t){ assert.strictEqual(t.toAbsolute().value, 'https://user:pass@a.example.com:8080/b/c/d/?123&aa=1&aa=2'); }
 	, ".authority() === 'user:pass@a.example.com:8080'": function(t){ assert.strictEqual(t.authority(), 'user:pass@a.example.com:8080'); }
 	, ".fragment()": function(t){ assert.strictEqual(t.fragment(), '#455'); }
-	, ".heirpart()": function(t){ assert.strictEqual(t.heirpart(), '//user:pass@a.example.com:8080/b/c/d/'); }
+	, ".hierpart()": function(t){ assert.strictEqual(t.hierpart(), '//user:pass@a.example.com:8080/b/c/d/'); }
 	, ".host() === 'a.example.com'": function(t){ assert.strictEqual(t.host(), 'a.example.com'); }
 	, ".path() === '/b/c/d/?123&aa=1&aa=2'": function(t){ assert.strictEqual(t.path(), '/b/c/d/'); }
 	, ".port() is '8080'": function(t){ assert.strictEqual(t.port(), '8080'); }
