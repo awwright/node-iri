@@ -56,16 +56,16 @@ IRI.prototype.defrag = function defrag() {
 	return (i < 0) ? this : new IRI(this.value.slice(0, i));
 }
 IRI.prototype.isAbsolute = function isAbsolute() {
-	return this.scheme()!=null && this.heirpart()!=null && this.fragment()==null;
+	return this.scheme()!=null && this.hierpart()!=null && this.fragment()==null;
 }
 IRI.prototype.toAbsolute = function toAbsolute() {
-	if(this.scheme() == null || this.heirpart() == null) { throw new Error("IRI must have a scheme and a heirpart!"); }
+	if(this.scheme() == null || this.hierpart() == null) { throw new Error("IRI must have a scheme and a hierpart!"); }
 	return this.resolveReference(this.value).defrag();
 }
 IRI.prototype.authority = function authority() {
-	var heirpart = this.heirpart();
-	if(heirpart.substring(0, 2) != "//") return null;
-	var authority = heirpart.slice(2);
+	var hierpart = this.hierpart();
+	if(hierpart.substring(0, 2) != "//") return null;
+	var authority = hierpart.slice(2);
 	var q = authority.indexOf("/");
 	return q>=0 ? authority.substring(0, q) : authority;
 }
@@ -73,19 +73,20 @@ IRI.prototype.fragment = function fragment() {
 	var i = this.value.indexOf("#");
 	return (i<0) ? null : this.value.slice(i);
 }
-IRI.prototype.heirpart = function heirpart() {
-	var heirpart = this.value;
-	var q = heirpart.indexOf("?");
+IRI.prototype.hierpart = function hierpart() {
+	var hierpart = this.value;
+	var q = hierpart.indexOf("?");
 	if(q >= 0) {
-		heirpart = heirpart.substring(0, q);
+		hierpart = hierpart.substring(0, q);
 	} else {
-		q = heirpart.indexOf("#");
-		if(q >= 0) heirpart = heirpart.substring(0, q);
+		q = hierpart.indexOf("#");
+		if(q >= 0) hierpart = hierpart.substring(0, q);
 	}
 	var q2 = this.scheme();
-	if(q2 != null) heirpart = heirpart.slice(1 + q2.length);
-	return heirpart;
+	if(q2 != null) hierpart = hierpart.slice(1 + q2.length);
+	return hierpart;
 }
+IRI.prototype.heirpart = IRI.prototype.hierpart;
 IRI.prototype.host = function host() {
 	var host = this.authority();
 	var q = host.indexOf("@");
@@ -99,8 +100,8 @@ IRI.prototype.host = function host() {
 }
 IRI.prototype.path = function path() {
 	var q = this.authority();
-	if(q == null) return this.heirpart();
-	return this.heirpart().slice(q.length + 2);
+	if(q == null) return this.hierpart();
+	return this.hierpart().slice(q.length + 2);
 }
 IRI.prototype.port = function port() {
 	var host = this.authority();
