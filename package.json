@@ -1,0 +1,19 @@
+{
+	"name": "iri",
+	"description": "IRI parsing and IRI-URI conversion utilities",
+	"homepage": "https://github.com/awwright/node-iri",
+	"author": "Austin Wright",
+	"keywords": [
+		"IRI"
+	],
+	"repository": {
+		"type": "git",
+		"url": "git://github.com/awwright/node-iri.git",
+		"web": "https://github.com/awwright/node-iri"
+	},
+	"main": "inde.js",
+	"scripts": {
+		"test": "vows"
+	},
+	"license": "Unlicense"
+}
