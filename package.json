@@ -15,5 +15,8 @@
 	"scripts": {
 		"test": "vows"
 	},
-	"license": "Unlicense"
+	"license": "Unlicense",
+	"devDependencies": {
+		"vows": "^0.8.1"
+	}
 }
