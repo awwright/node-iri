@@ -11,12 +11,13 @@
 		"url": "git://github.com/awwright/node-iri.git",
 		"web": "https://github.com/awwright/node-iri"
 	},
-	"main": "inde.js",
+	"main": "index.js",
 	"scripts": {
-		"test": "vows"
+		"test": "make test"
 	},
 	"license": "Unlicense",
 	"devDependencies": {
-		"vows": "^0.8.1"
+		"istanbul": "^0.4.5",
+		"mocha": "^5.2.0"
 	}
 }
