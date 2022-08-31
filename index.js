@@ -1,3 +1,5 @@
+"use strict";
+
 var api = exports;
 
 api.encodeString = function encodeString(s) {
@@ -38,41 +40,41 @@ api.encodeString = function encodeString(s) {
 		}
 	}
 	return out;
-}
+};
 
 /**
  * IRI
  */
 api.IRI = IRI;
-function IRI(iri) { this.value = iri; };
+function IRI(iri) { this.value = iri; }
 IRI.SCHEME_MATCH = new RegExp("^[a-z0-9-.+]+:", "i");
 //IRI.prototype = new api.RDFNode;
-IRI.prototype.toString = function toString() { return this.value; }
+IRI.prototype.toString = function toString() { return this.value; };
 IRI.prototype.nodeType = function nodeType() { return "IRI"; };
 IRI.prototype.toNT = function toNT() { return "<" + api.encodeString(this.value) + ">"; };
-IRI.prototype.n3 = function n3() { return this.toNT(); }
+IRI.prototype.n3 = function n3() { return this.toNT(); };
 IRI.prototype.defrag = function defrag() {
 	var i = this.value.indexOf("#");
 	return (i < 0) ? this : new IRI(this.value.slice(0, i));
-}
+};
 IRI.prototype.isAbsolute = function isAbsolute() {
 	return this.scheme()!=null && this.hierpart()!=null && this.fragment()==null;
-}
+};
 IRI.prototype.toAbsolute = function toAbsolute() {
 	if(this.scheme() == null || this.hierpart() == null) { throw new Error("IRI must have a scheme and a hierpart!"); }
 	return this.resolveReference(this.value).defrag();
-}
+};
 IRI.prototype.getAuthority = function authority() {
 	var hierpart = this.hierpart();
 	if(hierpart.substring(0, 2) != "//") return null;
 	var authority = hierpart.slice(2);
 	var q = authority.indexOf("/");
 	return q>=0 ? authority.substring(0, q) : authority;
-}
+};
 IRI.prototype.getFragment = function fragment() {
 	var i = this.value.indexOf("#");
 	return (i<0) ? null : this.value.slice(i);
-}
+};
 IRI.prototype.getHierpart = function hierpart() {
 	var hierpart = this.value;
 	var q = hierpart.indexOf("?");
@@ -85,7 +87,7 @@ IRI.prototype.getHierpart = function hierpart() {
 	var q2 = this.scheme();
 	if(q2 != null) hierpart = hierpart.slice(1 + q2.length);
 	return hierpart;
-}
+};
 IRI.prototype.getHost = function host() {
 	var host = this.authority();
 	var q = host.indexOf("@");
@@ -96,12 +98,12 @@ IRI.prototype.getHost = function host() {
 	}
 	q = host.lastIndexOf(":");
 	return q >= 0 ? host.substring(0, q) : host;
-}
+};
 IRI.prototype.getPath = function path() {
 	var q = this.authority();
 	if(q == null) return this.hierpart();
 	return this.hierpart().slice(q.length + 2);
-}
+};
 IRI.prototype.getPort = function port() {
 	var host = this.authority();
 	var q = host.indexOf("@");
@@ -114,14 +116,14 @@ IRI.prototype.getPort = function port() {
 	if(q < 0) return null;
 	host = host.slice(++q);
 	return host.length == 0 ? null : host;
-}
+};
 IRI.prototype.getQuery = function query() {
 	var q = this.value.indexOf("?");
 	if(q < 0) return null;
 	var f = this.value.indexOf("#");
 	if(f < 0) return this.value.slice(q);
-	return this.value.substring(q, f)
-}
+	return this.value.substring(q, f);
+};
 api.removeDotSegments = function removeDotSegments(input) {
 	var output = "";
 	var q = 0;
@@ -156,7 +158,7 @@ api.removeDotSegments = function removeDotSegments(input) {
 		}
 	}
 	return output;
-}
+};
 IRI.prototype.resolveReference = function resolveReference(ref) {
 	var reference;
 	if(typeof ref == "string") {
@@ -202,7 +204,7 @@ IRI.prototype.resolveReference = function resolveReference(ref) {
 						}
 						T.path += reference.path();
 					}else {
-						T.path = "/" + q
+						T.path = "/" + q;
 					}
 					T.path = api.removeDotSegments(T.path);
 				}
@@ -215,19 +217,19 @@ IRI.prototype.resolveReference = function resolveReference(ref) {
 	}
 	T.fragment = reference.fragment()||'';
 	return new IRI(T.scheme + ":" + T.authority + T.path + T.query + T.fragment);
-}
+};
 IRI.prototype.getScheme = function scheme() {
 	var scheme = this.value.match(IRI.SCHEME_MATCH);
 	return (scheme == null) ? null : scheme.shift().slice(0, -1);
-}
+};
 IRI.prototype.getUserinfo = function userinfo() {
 	var authority = this.authority();
 	var q = authority.indexOf("@");
 	return (q < 0) ? null : authority.substring(0, q);
-}
+};
 IRI.prototype.toURIString = function toURIString(){
 	return this.value.replace(/([\uA0-\uD7FF\uE000-\uFDCF\uFDF0-\uFFEF]|[\uD800-\uDBFF][\uDC00-\uDFFF])/g, function(a){return encodeURI(a);});
-}
+};
 IRI.prototype.toIRIString = function toIRIString(){
 	// HEXDIG requires capital characters
 	// 80-BF is following bytes, (%[89AB][0-9A-F])
@@ -246,11 +248,11 @@ IRI.prototype.toIRIString = function toIRIString(){
 		return decodeURIComponent(a);
 	});
 	return iri;
-}
+};
 
 IRI.prototype.toIRI = function toIRI(){
 	return new IRI(this.toIRIString());
-}
+};
 
 // Alias old names to new ones
 IRI.prototype.authority = IRI.prototype.getAuthority;
@@ -266,8 +268,8 @@ IRI.prototype.port = IRI.prototype.getPort;
 // Create a new IRI object and decode UTF-8 escaped characters
 api.fromURI = function fromURI(uri){
 	return new IRI(uri).toIRI();
-}
+};
 
 api.toIRIString = function toIRIString(uri){
 	return new IRI(uri).toIRIString();
-}
+};
