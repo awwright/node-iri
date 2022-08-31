@@ -115,9 +115,32 @@ describe('Interface', function(){
 		it(".toURIString()", function(){ assert.equal(t.toURIString(), "http://example.com/%F0%90%8C%80%F0%90%8C%81%F0%90%8C%82"); });
 	});
 	describe("IRI<->URI conversion", function(){
-		testConversion('http://www.example.org/red%09ros\xE9#red', 'http://www.example.org/red%09ros%C3%A9#red');
-		testConversion('http://example.com/\uD800\uDF00\uD800\uDF01\uD800\uDF02', 'http://example.com/%F0%90%8C%80%F0%90%8C%81%F0%90%8C%82');
-		testConversion('http://www.example.org/r\xE9sum\xE9.html', 'http://www.example.org/r%C3%A9sum%C3%A9.html');
-		testConversion('http://www.example.org/%2F', 'http://www.example.org/%2F');
+		describe("Standard examples", function(){
+			testConversion('http://www.example.org/red%09ros\xE9#red', 'http://www.example.org/red%09ros%C3%A9#red');
+			testConversion('http://example.com/\uD800\uDF00\uD800\uDF01\uD800\uDF02', 'http://example.com/%F0%90%8C%80%F0%90%8C%81%F0%90%8C%82');
+			testConversion('http://www.example.org/r\xE9sum\xE9.html', 'http://www.example.org/r%C3%A9sum%C3%A9.html');
+			testConversion('http://www.example.org/%2F', 'http://www.example.org/%2F');
+		});
+		describe("Reserved characters are not encoded", function(){
+			testConversion('http://www.example.org/%3A', 'http://www.example.org/%3A');
+			testConversion('http://www.example.org/%2F', 'http://www.example.org/%2F');
+			testConversion('http://www.example.org/%3F', 'http://www.example.org/%3F');
+			testConversion('http://www.example.org/%23', 'http://www.example.org/%23');
+			testConversion('http://www.example.org/%5B', 'http://www.example.org/%5B');
+			testConversion('http://www.example.org/%5D', 'http://www.example.org/%5D');
+			testConversion('http://www.example.org/%40', 'http://www.example.org/%40');
+			testConversion('http://www.example.org/%20', 'http://www.example.org/%20');
+			testConversion('http://www.example.org/%21', 'http://www.example.org/%21');
+			testConversion('http://www.example.org/%24', 'http://www.example.org/%24');
+			testConversion('http://www.example.org/%26', 'http://www.example.org/%26');
+			testConversion('http://www.example.org/%27', 'http://www.example.org/%27');
+			testConversion('http://www.example.org/%28', 'http://www.example.org/%28');
+			testConversion('http://www.example.org/%29', 'http://www.example.org/%29');
+			testConversion('http://www.example.org/%2A', 'http://www.example.org/%2A');
+			testConversion('http://www.example.org/%2B', 'http://www.example.org/%2B');
+			testConversion('http://www.example.org/%2C', 'http://www.example.org/%2C');
+			testConversion('http://www.example.org/%3B', 'http://www.example.org/%3B');
+			testConversion('http://www.example.org/%3D', 'http://www.example.org/%3D');
+		});
 	});
 });
